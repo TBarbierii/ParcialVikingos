@@ -1,0 +1,64 @@
+import Vikingos.*
+
+describe "Tests Vikingos" {
+		var aldea = new Aldea(20) 
+		var aldeaAmurallada = new AldeaAmurallada(20,10) 
+		var capital = new Capital(4, 20) 
+		var soldadoArmado = new Soldado(30,10)
+		var soldadoDesarmado = new Soldado(30,0)
+		var granjeroProductivo = new Granjero(2,4)
+		var granjeroImproductivo = new Granjero(2,0)
+		var expedicion = new Expedicion([aldea, capital])
+	
+
+	method armarExpedicion(){
+		soldadoArmado.cambiarCasta(karl)
+		expedicion.subir(soldadoArmado)
+		expedicion.subir(granjeroProductivo)
+	}
+	
+	// tests subir
+    test "Puedo agregar soldado karl armado a la expedicion "{
+    	soldadoArmado.cambiarCasta(karl)
+    	expedicion.subir(soldadoArmado)
+    	assert.that(expedicion.integrantes().contains(soldadoArmado))
+    }
+     test "No puedo agregar soldado jarl con armas a la expedicion "{
+    	assert.throwsExceptionLike(noPuedeSubirAExpedicion, { expedicion.subir(soldadoArmado)})
+    }
+     test "No puedo agregar a soldado karl sin armas a la expedicion "{
+    	soldadoDesarmado.cambiarCasta(karl)
+    	assert.throwsExceptionLike(noPuedeSubirAExpedicion, { expedicion.subir(soldadoDesarmado)})
+    }
+    test "Puedo agregar granjero productivo a la expedicion "{
+    	expedicion.subir(granjeroProductivo)
+    	assert.that(expedicion.integrantes().contains(granjeroProductivo))
+    }
+     test "No puedo agregar granjero improductivo a la expedicion "{
+    	assert.throwsExceptionLike(noPuedeSubirAExpedicion, { expedicion.subir(granjeroImproductivo)})
+    }
+    // Tests Vale la pena
+	test "Aldea vale la pena para 2 invasores"{
+		assert.that(aldea.valeLaPenaPara(2))
+	}
+	test "Capital vale la pena para 2 invasores"{
+    	self.armarExpedicion() 
+		assert.that(capital.valeLaPenaPara(2))
+	}
+	test "Aldea Amurallada no vale la pena para 2 invasores"{
+    	self.armarExpedicion() 
+		assert.notThat(aldeaAmurallada.valeLaPenaPara(2))
+	}
+	
+    test "expedicion con aldea amurallada no vale la expedicion"{
+    	self.armarExpedicion() 
+    	expedicion.agregarLugar(aldeaAmurallada)
+    	assert.notThat(expedicion.valeLaPena())
+    }
+    test "expedicion vale la pena"{
+    	self.armarExpedicion() 
+    	assert.that(expedicion.valeLaPena())
+    }
+
+
+}
