@@ -88,11 +88,12 @@ class Expedicion {
 			int.agregarAlBotinPersonal(botin / self.cantidadIntegrantes())
 		}
 	}
-	method aumentarVidasCobradas() { 
-		integrantes.forEach{int => 
+	method aumentarVidasCobradasEn(lugar) { 
+		self.asesinosEn(lugar).forEach{int => 
 			int.aumentarVidasCobradas()
 		}
 	}
+	method asesinosEn(lugar) = integrantes.take(lugar.defensoresDerrotados(self.cantidadIntegrantes()))
 	method integrantes() = integrantes
 	method cantidadIntegrantes() = integrantes.size()
 	method agregarLugar(objetivo){objetivos.add(objetivo)}
@@ -101,8 +102,9 @@ class Expedicion {
 class Lugar {
 	
 	method serInvadidoPor(expedicion) {
-		self.destruirse(expedicion.cantidadIntegrantes())
 		expedicion.repartirBotin(self.botin(expedicion.cantidadIntegrantes()))
+		self.destruirse(expedicion.cantidadIntegrantes())
+
 	}
 	method destruirse(invasores)
 	method botin(invasores)
@@ -150,8 +152,8 @@ class Capital inherits Lugar{
 		defensores -= self.defensoresDerrotados(invasores)
 	}
 	override method serInvadidoPor(expedicion){
+		expedicion.aumentarVidasCobradasEn(self)
 		super(expedicion)
-		expedicion.aumentarVidasCobradas()
 	}
 	method defensoresDerrotados(invasores) = defensores.min(invasores)
 
