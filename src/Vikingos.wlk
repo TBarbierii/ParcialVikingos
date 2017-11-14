@@ -24,9 +24,9 @@ class Soldado inherits Vikingo{
 	var vidasCobradas 
 	var cantArmas
 
-	constructor(vidas,armas) {
+	constructor(vidas,_cantArmas) {
 		vidasCobradas = vidas
-		cantArmas = armas
+		cantArmas = _cantArmas
 	}
 	override method esProductivo() = vidasCobradas > 20 and self.tieneArmas()
 
@@ -44,21 +44,21 @@ class Soldado inherits Vikingo{
 
 class Granjero inherits Vikingo {
 
-	var hijos
-	var hectareas
+	var cantHijos
+	var cantHectareas
 
-	constructor(cantHijos,cantHectareas) {
-		hijos = cantHijos
-		hectareas = cantHectareas 
+	constructor(_cantHijos,_cantHectareas) {
+		cantHijos = _cantHijos
+		cantHectareas = _cantHectareas 
 	}
 	override method esProductivo() =
-		 hectareas * 2 >= hijos 
+		 cantHectareas * 2 >= cantHijos 
 
 	method tieneArmas() = false
 
 	method bonificarAscenso(){
-		hijos += 2
-		hectareas += 2
+		cantHijos += 2
+		cantHectareas += 2
 	}
 }
 
@@ -106,56 +106,56 @@ class Lugar {
 		self.destruirse(expedicion.cantidadIntegrantes())
 
 	}
-	method destruirse(invasores)
-	method botin(invasores)
+	method destruirse(cantInvasores)
+	method botin(cantInvasores)
 }
 
 class Aldea inherits Lugar{
-	var crucifijos
+	var cantCrucifijos
 
-	constructor(cantCrucifijos){
-		crucifijos= cantCrucifijos
+	constructor(_cantCrucifijos){
+		cantCrucifijos = _cantCrucifijos
 	}
-	method valeLaPenaPara(invasores) = self.botin(invasores) >= 15
+	method valeLaPenaPara(cantInvasores) = self.botin(cantInvasores) >= 15
 
-	override method botin(invasores) = crucifijos
+	override method botin(cantInvasores) = cantCrucifijos
 
-	override method destruirse(invasores){
-		crucifijos = 0
+	override method destruirse(cantInvasores){
+		cantCrucifijos = 0
 	}
 }
 
 class AldeaAmurallada inherits Aldea {
 	var minimosVikingos
-	constructor(crucifijos, vikingos) = super(crucifijos){
+	constructor(_cantCrucifijos, vikingos) = super(_cantCrucifijos){
 		minimosVikingos = vikingos
 	}
-	override method valeLaPenaPara(invasores) 
-		= invasores >= minimosVikingos and super(invasores)
+	override method valeLaPenaPara(cantInvasores) 
+		= cantInvasores >= minimosVikingos and super(cantInvasores)
 }
 
 class Capital inherits Lugar{
-	var defensores 
+	var cantDefensores 
 	var factorDeRiqueza
 
-	constructor(cantDefensores,riqueza){
-		defensores = cantDefensores
+	constructor(_cantDefensores,riqueza){
+		cantDefensores = _cantDefensores
 		factorDeRiqueza = riqueza
 	}
-	method valeLaPenaPara(invasores) =
-		invasores <= self.botin(invasores) / 3
+	method valeLaPenaPara(cantInvasores) =
+		cantInvasores <= self.botin(cantInvasores) / 3
 
-	override method botin(invasores) =
-		 self.defensoresDerrotados(invasores) * factorDeRiqueza
+	override method botin(cantInvasores) =
+		 self.defensoresDerrotados(cantInvasores) * factorDeRiqueza
 	
-	override method destruirse(invasores){
-		defensores -= self.defensoresDerrotados(invasores)
+	override method destruirse(cantInvasores){
+		cantDefensores -= self.defensoresDerrotados(cantInvasores)
 	}
 	override method serInvadidoPor(expedicion){
 		expedicion.aumentarVidasCobradasEn(self)
 		super(expedicion)
 	}
-	method defensoresDerrotados(invasores) = defensores.min(invasores)
+	method defensoresDerrotados(cantInvasores) = defensores.min(cantInvasores)
 
 }
 
