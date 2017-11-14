@@ -13,8 +13,8 @@ describe "Tests Vikingos" {
 
 	method armarExpedicion(){
 		soldadoArmado.cambiarCasta(karl)
-		expedicion.subir(soldadoArmado)
 		expedicion.subir(granjeroProductivo)
+		expedicion.subir(soldadoArmado)
 	}
 	
 	// tests subir
@@ -59,6 +59,33 @@ describe "Tests Vikingos" {
     	self.armarExpedicion() 
     	assert.that(expedicion.valeLaPena())
     }
-
-
+	// tests realizar expedición
+	
+	test "Realizar expedición disminuye crucifijos"{
+    	self.armarExpedicion()
+    	expedicion.realizar() 
+    	assert.equals(0,aldea.cantCrucifijos())
+    }
+    test "Realizar expedición disminuye defensores"{
+    	self.armarExpedicion()
+    	expedicion.realizar() 
+    	assert.equals(2,capital.cantDefensores())
+    }
+    test "Realizar expedición aumenta vidas cobradas de soldado"{
+    	self.armarExpedicion() 
+    	expedicion.realizar()
+    	assert.equals(31,soldadoArmado.vidasCobradas())
+    }
+    test "Capital con pocos defensores al ser invadida no recompensa con vidas a todos los invasores"{
+    	self.armarExpedicion()
+    	capital.cantDefensores(1)
+    	expedicion.realizar() 
+    	assert.equals(30,soldadoArmado.vidasCobradas())
+    }
+    test "Realizar expedición aumenta correctamente dinero de integrantes"{
+    	self.armarExpedicion()
+    	expedicion.realizar() 
+    	assert.equals((2*20+20)/2,soldadoArmado.dinero())
+    	assert.equals((2*20+20)/2,granjeroProductivo.dinero())
+    }
 }

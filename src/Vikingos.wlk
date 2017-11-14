@@ -1,6 +1,7 @@
 class Vikingo {
 
 	var casta = jarl 
+	var dinero = 0
 
 	method puedeSubirA(expedicion)
 		= self.esProductivo() and casta.puedeIr(self,expedicion)
@@ -16,7 +17,10 @@ class Vikingo {
 	method cambiarCasta(cas){
 		casta = cas
 	}
-
+	method agregarAlBotinPersonal(cantOro){
+		dinero += cantOro
+	}
+	method dinero() = dinero
 }
 
 class Soldado inherits Vikingo{
@@ -39,6 +43,8 @@ class Soldado inherits Vikingo{
 	method bonificarAscenso(){
 		cantArmas += 10
 	}
+	
+	method vidasCobradas() = vidasCobradas
 
 }
 
@@ -123,6 +129,8 @@ class Aldea inherits Lugar{
 	override method destruirse(cantInvasores){
 		cantCrucifijos = 0
 	}
+	
+	method cantCrucifijos() = cantCrucifijos
 }
 
 class AldeaAmurallada inherits Aldea {
@@ -155,7 +163,9 @@ class Capital inherits Lugar{
 		expedicion.aumentarVidasCobradasEn(self)
 		super(expedicion)
 	}
-	method defensoresDerrotados(cantInvasores) = defensores.min(cantInvasores)
+	method defensoresDerrotados(cantInvasores) = cantDefensores.min(cantInvasores)
+	method cantDefensores() = cantDefensores
+	method cantDefensores(_cant){cantDefensores=_cant}
 
 }
 
