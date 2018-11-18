@@ -1,79 +1,64 @@
 class Vikingo {
 
-	var casta = jarl 
-	var dinero = 0
+	var property casta = jarl 
+	var property oro = 0
 
 	method puedeSubirA(expedicion)
 		= self.esProductivo() and casta.puedeIr(self,expedicion)
 
 	method esProductivo()
 
-	method aumentarVidasCobradas(){} //no hace nada
+	method cobrarVida(){} //no hace nada
 
 	// punto entrada punto 5
 	method ascender(){ 
 		casta.ascender(self)
 	}
-	method cambiarCasta(cas){
-		casta = cas
+	
+	method ganar(monedas){
+		oro += monedas
 	}
-	method agregarAlBotinPersonal(cantOro){
-		dinero += cantOro
-	}
-	method dinero() = dinero
 }
 
 class Soldado inherits Vikingo{
 
-	var vidasCobradas 
-	var cantArmas
+	var property vidasCobradas 
+	var armas
 
-	constructor(vidas,_cantArmas) {
-		vidasCobradas = vidas
-		cantArmas = _cantArmas
-	}
 	override method esProductivo() = vidasCobradas > 20 and self.tieneArmas()
 
-	method tieneArmas() = cantArmas > 0
+	method tieneArmas() = armas > 0
 
-	override method aumentarVidasCobradas(){
+	override method cobrarVida(){
 		vidasCobradas += 1
 	}
 	
 	method bonificarAscenso(){
-		cantArmas += 10
+		armas += 10
 	}
 	
-	method vidasCobradas() = vidasCobradas
-
 }
 
 class Granjero inherits Vikingo {
 
-	var cantHijos
-	var cantHectareas
+	var hijos
+	var hectareas
 
-	constructor(_cantHijos,_cantHectareas) {
-		cantHijos = _cantHijos
-		cantHectareas = _cantHectareas 
-	}
 	override method esProductivo() =
-		 cantHectareas * 2 >= cantHijos 
+		 hectareas * 2 >= hijos 
 
 	method tieneArmas() = false
 
 	method bonificarAscenso(){
-		cantHijos += 2
-		cantHectareas += 2
+		hijos += 2
+		hectareas += 2
 	}
 }
 
 class Expedicion {
-	const integrantes = []
-	var objetivos
+	const property integrantes = []
+	var objetivos 
 	
-	constructor(lugares){objetivos = lugares}
-
 	// punto de entrada del punto 1
 	method subir(vikingo){ 
 		if (not vikingo.puedeSubirA(self))
@@ -91,16 +76,15 @@ class Expedicion {
 
 	method repartirBotin(botin){
 		integrantes.forEach{int => 
-			int.agregarAlBotinPersonal(botin / self.cantidadIntegrantes())
+			int.ganar(botin / self.cantidadIntegrantes())
 		}
 	}
 	method aumentarVidasCobradasEn(cantidad) { 
 		integrantes.take(cantidad).forEach{int => 
-			int.aumentarVidasCobradas()
+			int.cobrarVida()
 		}
 	}
 	
-	method integrantes() = integrantes
 	method cantidadIntegrantes() = integrantes.size()
 	method agregarLugar(objetivo){objetivos.add(objetivo)}
 }
@@ -117,55 +101,42 @@ class Lugar {
 }
 
 class Aldea inherits Lugar{
-	var cantCrucifijos
+	var property crucifijos
 
-	constructor(_cantCrucifijos){
-		cantCrucifijos = _cantCrucifijos
-	}
 	method valeLaPenaPara(cantInvasores) = self.botin(cantInvasores) >= 15
 
-	override method botin(cantInvasores) = cantCrucifijos
+	override method botin(cantInvasores) = crucifijos
 
 	override method destruirse(cantInvasores){
-		cantCrucifijos = 0
+		crucifijos = 0
 	}
-	
-	method cantCrucifijos() = cantCrucifijos
 }
 
 class AldeaAmurallada inherits Aldea {
 	var minimosVikingos
-	constructor(_cantCrucifijos, vikingos) = super(_cantCrucifijos){
-		minimosVikingos = vikingos
-	}
+
 	override method valeLaPenaPara(cantInvasores) 
 		= cantInvasores >= minimosVikingos and super(cantInvasores)
 }
 
 class Capital inherits Lugar{
-	var cantDefensores 
-	var factorDeRiqueza
+	var property defensores 
+	var riqueza
 
-	constructor(_cantDefensores,riqueza){
-		cantDefensores = _cantDefensores
-		factorDeRiqueza = riqueza
-	}
 	method valeLaPenaPara(cantInvasores) =
 		cantInvasores <= self.botin(cantInvasores) / 3
 
 	override method botin(cantInvasores) =
-		 self.defensoresDerrotados(cantInvasores) * factorDeRiqueza
+		 self.defensoresDerrotados(cantInvasores) * riqueza
 	
 	override method destruirse(cantInvasores){
-		cantDefensores -= self.defensoresDerrotados(cantInvasores)
+		defensores -= self.defensoresDerrotados(cantInvasores)
 	}
 	override method serInvadidoPor(expedicion){
 		expedicion.aumentarVidasCobradasEn(self.defensoresDerrotados(expedicion.cantidadIntegrantes()))
 		super(expedicion)
 	}
-	method defensoresDerrotados(cantInvasores) = cantDefensores.min(cantInvasores)
-	method cantDefensores() = cantDefensores
-	method cantDefensores(_cant){cantDefensores=_cant}
+	method defensoresDerrotados(cantInvasores) = defensores.min(cantInvasores)
 
 }
 
@@ -180,13 +151,13 @@ object jarl inherits Casta {
 	override method puedeIr(vikingo, expedicion) = not vikingo.tieneArmas()
 
 	method ascender(vikingo){
-		vikingo.cambiarCasta(karl)
+		vikingo.casta(karl)
 		vikingo.bonificarAscenso()
 	}
 }
 object karl inherits Casta{
 	method ascender(vikingo){
-		vikingo.cambiarCasta(thrall)
+		vikingo.casta(thrall)
 	}
 }
 
